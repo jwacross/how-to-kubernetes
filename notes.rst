@@ -21,6 +21,7 @@ Unit Testing
 
   * gitlab runner setup
 
+
 Integration Testing
 -------------------
 
@@ -30,15 +31,117 @@ Integration Testing
   * run tests
   * tear it down
 
-Rancher
--------
+* A solution to continuously deploying to multiple kubernetes environments such as dev, qa, performance requires templated kubernetes manifests or hardcoded manifests for each env (app deployment, service creation, namespace creation, eg.)
 
-* containers within containers
+  * One possible set of tools to achieve this for lets say a simple web app:
 
- * deploy ranger on a few VMs
- * install kubernetes on top of rancher
+    * Jenkins as the CI/CD server
+    * Ansible (able to authenticate to clusters, apply kubernetes manifests, jinja templating allows for changing the templated kubernetes manifests with specific vars)
+    * postman/newman for integration test
 
-* useful for dev and testing
+
+Building Containers
+------------
+
+* Best video I've ever seen for how to build effective docker containers (https://dockercon2018.hubs.vidyard.com/watch/YppHjLzVXAoF2PaRg3oQRs)
+
+* In your CI build process, you should include a stage for running clair before pushing your image to a repo (https://github.com/coreos/clair). This will scan your built container for CVEs.
+
+* Microscanner is also another alternative to clair https://github.com/aquasecurity/microscanner
+
+Kubernetes Control Plane Solutions
+-------------
+
+* AWS EKS
+
+  * Cloud lock-in
+  * Doesn't do kubernetes aware worker node upgrades
+  *
+  *
+
+* Google Cloud Platform
+
+  * Cloud lock-in
+  *
+  *
+  *
+
+* Azure Kubernetes Services
+
+  * Cloud lock-in
+  *
+  *
+  *
+
+* CoreOS tectonic && RedHat Openshift (https://coreos.com/blog/coreos-tech-to-combine-with-red-hat-openshift/)
+
+  * Not tied to a specific Cloud
+  * Native worker node upgrades
+  * Currently being merged with Redhat Openshift to provide the 'best' solution
+
+* Rancher
+
+  * containers within containers
+  * deploy rancher on a few VMs
+  * install kubernetes on top of rancher
+  * useful for dev and testing
+
+Some Kubernetes best practises
+------------
+
+* Set resource limits on your kubernetes deployments (prevents pods from using ridiculous amounts of resources. Also don't allow someone to define 8gb in a request limit!!!)
+
+*
+
+Essential Extra Kubernetes Goodies
+-----------
+
+* Ambassador is super useful for web based microservices. https://www.getambassador.io/
+
+*
+
+Kubernetes Security
+------------
+
+* Networking and ACLS
+
+  * Calico
+  * Weave
+  * Ingress
+
+* Service Mesh and why it is so important and useful (https://akomljen.com/kubernetes-service-mesh/)
+
+  * istio
+
+* Rbac is how kubernetes does authorization.
+
+  * Roles
+  * ClusterRoles
+  * RoleBindings
+  * ClusterRoleBindings
+
+Kubernetes Cluster Organization
+-------------
+
+ * You will probably want to segregate your environments into different clusters to ensure one environment doesn't demolish another. (Security reasons as well)
+
+ * For non critical environments you can define namespaces to segregate environments.
+
+ * A typical setup might be:
+
+   * Cluster 1 -> Namespace dev, Namespace qa
+   * Cluster 2 -> Namespace perf
+   * Cluster 3 -> Namespace prod
+
+Kubernetes Administration
+---------------
+
+ * Kubectl commands are pretty straight forward and the documentation around it are great.
+
+ * Kubectl command completion is a must https://kubernetes.io/docs/tasks/tools/install-kubectl/#enabling-shell-autocompletion
+
+ * Running a jumpbox(bastion) instance in the kubernetes cluster is very useful for diagnosing issues. Pods running alpine probably won't have many utilities needed.
+
 
 Helm Tiller
 -----------
@@ -51,30 +154,6 @@ Helm Tiller
 * alternative service deployment: thinking about your app, not how you get there
 
   * ubuntu has juju
-
-OS Selection
-------------
-
-* CoreOS
-
-  * acquired by redhat
-
-* generally smaller containers are better
-
-  * fewer layers in your container, the better
-
-* for a min environment
-
-  * you want to run a bastion instance
-  * run fedora or something
-
-OpenShift
----------
-
-* Kubernetes with redhat tools
-
-  * with a redhat spin
-  * useful for CI
 
 Persistent Storage
 ------------------
@@ -102,33 +181,6 @@ Persistent Storage
 
   * it's pricey but it's boss
 
-Ingress
--------
-
-* routing
-
-AWS EKS
--------
-
-* it's a shit show
-* use gcloud
-
-* Jenkins is used as a CI tool
-
-  * ansible roles for the apps
-  * kubernetes manifests are in anisble playbook
-  * ginga template the manifests for different environments
-
-* if you have to update your worker nodes
-
-  * amazon is the only cloud where they don't recycle nodes in a kubernetes aware mode
-  * abs will pull the plug on the node and shove in another one
-  * mid processed requests get dropped
-
-* coreos tecktonics seems pretty good
-
-  * the general consensus is go gcp
-
 Research
 --------
 
@@ -140,43 +192,6 @@ Research
 
   * when you cycle your nodes, you may exhaust your limit
 
-Security
---------
-
-* clair - container scanning tool
-
-  * it scans for vulnerabilities
-  * should be used in the CI stack
-  * maintained by coreos
-  * you can set the scan level
-
-* authorization: rbac
-
-  * you can define RBAC rules for AD groups
-
-* authentication: AWS IAM
-
-* service mesh
-
-  * istio
-  * calico
-  * they are controllers in the cluster
-  * they setup mutual TLS between applications
-  * everything is encrypted except for the kubernets dashboard
-
-Topology
---------
-
-* dev, qa, performance
-
-  * different namespaces in the same cluster
-
-* separate clusters for staging, production
-
-Administration
---------------
-
-* the command line tools are good
 
 Monitoring
 ----------
@@ -198,10 +213,3 @@ Monitoring
   * casandra is resource heavy for a few 1000 pods
   * can send metrics to graphana
   * graphana can send emails
-
-Platforms
----------
-
-* AWS isn't awful
-
-  * it's about 6 months behind GCP
