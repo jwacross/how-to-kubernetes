@@ -4,3 +4,4 @@
    :maxdepth: 2
 
    tools
+   notes
