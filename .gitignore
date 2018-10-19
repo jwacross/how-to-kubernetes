@@ -1,0 +1,3 @@
+# The sphinx build folder.
+_build
+.ropeproject
