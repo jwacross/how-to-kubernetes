@@ -186,7 +186,7 @@ Research
 
 * gamedev with kubernetes
 
-  * there are some good articles on fortnight for database scaling
+  * there are some good articles for dedicated game server scaling (e.g. https://www.youtube.com/watch?v=CLNpkjolxYA)
 
 * you have to educate people on their density usage
 
