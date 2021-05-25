@@ -73,7 +73,7 @@
                 "sha256:74c935a1b8bb9a3947c50a54766a969d4846290e1e788ea44c1392163723c3bd",
                 "sha256:f84be1bb0040caca4cea721fcbbbbd61f9be9464ca236387158b0feea01914a4"
             ],
-            "version": "==2.10"
+            "version": "~> 2.11.3"
         },
         "markupsafe": {
             "hashes": [
@@ -93,7 +93,7 @@
                 "sha256:78f3f434bcc5d6ee09020f92ba487f95ba50f1e3ef83ae96b9d5ffa1bab25c5d",
                 "sha256:dbae1046def0efb574852fab9e90209b23f556367b5a320c0bcb871c77c3e8cc"
             ],
-            "version": "==2.2.0"
+            "version": "~> 2.7.4"
         },
         "pyparsing": {
             "hashes": [
